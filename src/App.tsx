@@ -11,13 +11,14 @@ function App() {
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
 
-  const [inputValue, setInputValue] = useState<number>(3);
+  const [inputValue, setInputValue] = useState<string>('10');
+  const [tab, setTab] = useState<number>(0);
 
   const handleTabClick = (index: number) => {
-    console.log('Clicked Tab Index:', index);
+    setTab(index);
   };
 
-  useMarkers({ mapRef, count: Number(inputValue) });
+  useMarkers({ mapRef, count: Number(inputValue), isOptimized: tab === 1 });
 
   return (
     <div className="w-full h-screen">
@@ -35,7 +36,7 @@ function App() {
         <input
           type="text"
           value={inputValue}
-          onChange={(e) => setInputValue(Number(e.target.value))}
+          onChange={(e) => setInputValue(e.target.value)}
           className="border rounded p-2 w-full my-2"
           placeholder="Enter count of markers"
         />

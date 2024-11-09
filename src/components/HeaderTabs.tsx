@@ -7,7 +7,7 @@ interface HeaderTabsProps {
 const HeaderTabs = ({ onTabClick }: HeaderTabsProps) => {
   const [activeTab, setActiveTab] = useState(0);
 
-  const tabs = ['MapBox-GL Map', 'Tab 2', 'Tab 3'];
+  const tabs = ['MapBox-GL Map', 'MapBox-GL Map(optimized)'];
 
   const handleTabClick = (index: number) => {
     setActiveTab(index);

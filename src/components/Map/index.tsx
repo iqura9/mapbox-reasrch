@@ -29,11 +29,9 @@ export const MapGlMap = ({
     mapRef.current?.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
     mapRef.current.on('load', () => {
-      // Nifty code to force map to fit inside container when it loads
       mapRef.current?.resize();
     });
 
-    // Clean up on unmount
     return () => mapRef.current?.remove();
   }, [longitude, latitude, zoom, mapRef, containerRef]);
 
