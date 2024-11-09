@@ -1,35 +1,41 @@
 import mapboxgl from 'mapbox-gl';
-import { MutableRefObject, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
-mapboxgl.accessToken = import.meta.env.VITE_REACT_MAPBOX_TOKEN;
-
-interface MapProps {
+interface MapGlMapProps {
   longitude: number;
   latitude: number;
   zoom: number;
-  mapRef: MutableRefObject<HTMLDivElement | null>;
+  mapRef: React.MutableRefObject<mapboxgl.Map | null>;
+  containerRef: React.RefObject<HTMLDivElement>;
 }
 
-export const MapboxGlMap = ({
+export const MapGlMap = ({
   longitude,
   latitude,
   zoom,
   mapRef,
-}: MapProps) => {
+  containerRef,
+}: MapGlMapProps) => {
   useEffect(() => {
-    if (mapRef.current) {
-      const map = new mapboxgl.Map({
-        container: mapRef.current,
-        style: 'mapbox://styles/mapbox/streets-v12',
-        center: [longitude, latitude],
-        zoom: zoom,
-      });
+    if (!containerRef.current) return;
 
-      return () => {
-        map.remove();
-      };
-    }
-  }, [longitude, latitude, zoom, mapRef]);
+    mapRef.current = new mapboxgl.Map({
+      container: containerRef.current,
+      style: 'mapbox://styles/mapbox/streets-v12',
+      center: [longitude, latitude],
+      zoom: zoom,
+    });
 
-  return <div ref={mapRef} className="w-full h-[calc(100vh_-_150px)]" />;
+    mapRef.current?.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+    mapRef.current.on('load', () => {
+      // Nifty code to force map to fit inside container when it loads
+      mapRef.current?.resize();
+    });
+
+    // Clean up on unmount
+    return () => mapRef.current?.remove();
+  }, [longitude, latitude, zoom, mapRef, containerRef]);
+
+  return <div ref={containerRef} className="w-full h-[800px]" id="map" />;
 };
