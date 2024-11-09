@@ -16,7 +16,7 @@ export const MapboxGlMap = ({ longitude, latitude, zoom }: MapProps) => {
     if (mapContainerRef.current) {
       const map = new mapboxgl.Map({
         container: mapContainerRef.current,
-        style: 'mapbox://styles/mapbox/streets-v11',
+        style: 'mapbox://styles/mapbox/streets-v12',
         center: [longitude, latitude],
         zoom: zoom,
       });
@@ -28,6 +28,6 @@ export const MapboxGlMap = ({ longitude, latitude, zoom }: MapProps) => {
   }, [longitude, latitude, zoom]);
 
   return (
-    <div ref={mapContainerRef} style={{ width: '100%', height: '500px' }} />
+    <div ref={mapContainerRef} className="w-full h-[calc(100vh_-_150px)]" />
   );
 };
