@@ -1,5 +1,5 @@
 import mapboxgl from 'mapbox-gl';
-import { useEffect, useRef } from 'react';
+import { MutableRefObject, useEffect } from 'react';
 
 mapboxgl.accessToken = import.meta.env.VITE_REACT_MAPBOX_TOKEN;
 
@@ -7,15 +7,19 @@ interface MapProps {
   longitude: number;
   latitude: number;
   zoom: number;
+  mapRef: MutableRefObject<HTMLDivElement | null>;
 }
 
-export const MapboxGlMap = ({ longitude, latitude, zoom }: MapProps) => {
-  const mapContainerRef = useRef<HTMLDivElement | null>(null);
-
+export const MapboxGlMap = ({
+  longitude,
+  latitude,
+  zoom,
+  mapRef,
+}: MapProps) => {
   useEffect(() => {
-    if (mapContainerRef.current) {
+    if (mapRef.current) {
       const map = new mapboxgl.Map({
-        container: mapContainerRef.current,
+        container: mapRef.current,
         style: 'mapbox://styles/mapbox/streets-v12',
         center: [longitude, latitude],
         zoom: zoom,
@@ -25,9 +29,7 @@ export const MapboxGlMap = ({ longitude, latitude, zoom }: MapProps) => {
         map.remove();
       };
     }
-  }, [longitude, latitude, zoom]);
+  }, [longitude, latitude, zoom, mapRef]);
 
-  return (
-    <div ref={mapContainerRef} className="w-full h-[calc(100vh_-_150px)]" />
-  );
+  return <div ref={mapRef} className="w-full h-[calc(100vh_-_150px)]" />;
 };
