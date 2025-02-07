@@ -1,6 +1,8 @@
 import mapboxgl from 'mapbox-gl';
 import { MutableRefObject, useEffect, useState } from 'react';
 import { generateRandomCoordinates } from '../utils/generateRandomCoords';
+import { renderSlowMarkers } from '../utils/renderSlowMarkers';
+import { renderOptimizedMarkers } from '../utils/renderOptimizedMarkers';
 
 interface UseMarkersProps {
   mapRef: MutableRefObject<mapboxgl.Map | null>;
@@ -18,6 +20,7 @@ export default function useMarkers({
   );
 
   useEffect(() => {
+    console.log('map rerender');
     if (!mapRef.current || count === 0) return;
 
     const map = mapRef.current;
@@ -48,6 +51,7 @@ export default function useMarkers({
     const markers: mapboxgl.Marker[] = [];
 
     if (isOptimized) {
+      console.log('render renderOptimizedMarkers');
       renderOptimizedMarkers(map, coordinatesList);
     } else {
       renderSlowMarkers(map, coordinatesList, markers);
@@ -61,60 +65,4 @@ export default function useMarkers({
       }
     };
   }, [mapRef, isOptimized, coordinatesList]);
-}
-
-function renderSlowMarkers(
-  map: mapboxgl.Map,
-  coordinatesList: [number, number][],
-  markers: mapboxgl.Marker[]
-) {
-  coordinatesList.forEach((coords) => {
-    const el = document.createElement('div');
-    el.className = 'marker';
-    el.style.backgroundImage = `url(https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png)`;
-    el.style.width = '32px';
-    el.style.height = '40px';
-    el.style.backgroundSize = '100%';
-    const marker = new mapboxgl.Marker(el).setLngLat(coords).addTo(map);
-    markers.push(marker);
-  });
-}
-
-function renderOptimizedMarkers(
-  map: mapboxgl.Map,
-  coordinatesList: [number, number][]
-) {
-  const features: mapboxgl.GeoJSONFeature[] = coordinatesList.map((coords) => ({
-    type: 'Feature',
-    geometry: { type: 'Point', coordinates: coords },
-    properties: { title: 'Mapbox Marker' },
-    source: '',
-  }));
-
-  map.addSource('points', {
-    type: 'geojson',
-    data: {
-      type: 'FeatureCollection',
-      features,
-    },
-  });
-
-  const makiIconUrl =
-    'https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png';
-
-  map.loadImage(makiIconUrl, (error, image) => {
-    if (error) throw error;
-    map.addImage('custom-marker', image as ImageData);
-
-    map.addLayer({
-      id: 'points-layer',
-      type: 'symbol',
-      source: 'points',
-      layout: {
-        'icon-image': 'custom-marker',
-        'icon-allow-overlap': true,
-        'symbol-avoid-edges': true,
-      },
-    });
-  });
 }

@@ -16,7 +16,6 @@ export const ReactMapGlMap = ({
   const mapRef = useRef<Map | null>(null);
   const [mapIsLoaded, setMapIsLoaded] = useState(false);
 
-  // Trigger this function when the map has loaded
   const handleMapLoad = () => {
     setMapIsLoaded(true);
   };
