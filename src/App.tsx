@@ -1,10 +1,9 @@
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import HeaderTabs from './components/HeaderTabs';
 import { MapGlMap } from './components/Map';
 import { ReactMapGlMap } from './components/Map/ReactMapGlMap';
-import useMarkers from './hooks/useMarkers';
 
 mapboxgl.accessToken = import.meta.env.VITE_REACT_MAPBOX_TOKEN;
 
@@ -14,17 +13,12 @@ const KYIV_COORDS = {
 };
 
 function App() {
-  const mapRef = useRef<mapboxgl.Map | null>(null);
-  const mapContainerRef = useRef<HTMLDivElement | null>(null);
-
   const [inputValue, setInputValue] = useState<string>('10');
   const [tab, setTab] = useState<number>(2);
 
   const handleTabClick = (index: number) => {
     setTab(index);
   };
-
-  useMarkers({ mapRef, count: Number(inputValue), isOptimized: tab === 1 });
 
   return (
     <div className="w-full h-screen">
@@ -34,10 +28,10 @@ function App() {
           longitude={KYIV_COORDS.longitude}
           latitude={KYIV_COORDS.latitude}
           zoom={12}
-          mapRef={mapRef}
-          containerRef={mapContainerRef}
+          inputValue={inputValue}
         />
       ) : null}
+
       {tab === 2 ? (
         <ReactMapGlMap markerCount={Number(inputValue)} isOptimized={false} />
       ) : null}

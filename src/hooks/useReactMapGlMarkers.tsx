@@ -32,7 +32,7 @@ export default function useReactMapGlMarkers({
       generateRandomCoordinates(centerCoordinates, 0.1)
     );
     setCoordinatesList(newCoordinates);
-  }, [mapRef, count, mapIsLoaded]); // Run only when mapIsLoaded is true
+  }, [mapRef, count, mapIsLoaded]);
 
   if (coordinatesList.length === 0) return null;
 

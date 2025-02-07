@@ -1,21 +1,31 @@
 import mapboxgl from 'mapbox-gl';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import useMarkers from '../../hooks/useMarkers';
 
 interface MapGlMapProps {
   longitude: number;
   latitude: number;
   zoom: number;
-  mapRef: React.MutableRefObject<mapboxgl.Map | null>;
-  containerRef: React.RefObject<HTMLDivElement>;
+  inputValue: string;
 }
 
 export const MapGlMap = ({
   longitude,
   latitude,
   zoom,
-  mapRef,
-  containerRef,
+  inputValue,
 }: MapGlMapProps) => {
+  const mapRef = useRef<mapboxgl.Map | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [isMapLoaded, setIsMapLoaded] = useState(false);
+
+  useMarkers({
+    mapRef,
+    count: Number(inputValue),
+    isOptimized: true,
+    isMapLoaded,
+  });
+
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -28,12 +38,20 @@ export const MapGlMap = ({
 
     mapRef.current?.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-    mapRef.current.on('load', () => {
+    const handleLoad = () => {
+      setIsMapLoaded(true);
       mapRef.current?.resize();
-    });
+    };
 
-    return () => mapRef.current?.remove();
-  }, [longitude, latitude, zoom, mapRef, containerRef]);
+    mapRef.current.on('load', handleLoad);
+
+    return () => {
+      if (mapRef.current) {
+        mapRef.current.off('load', handleLoad);
+        mapRef.current.remove();
+      }
+    };
+  }, [longitude, latitude, zoom]);
 
   return <div ref={containerRef} className="w-full h-[800px]" id="map" />;
 };

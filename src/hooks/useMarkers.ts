@@ -8,20 +8,21 @@ interface UseMarkersProps {
   mapRef: MutableRefObject<mapboxgl.Map | null>;
   count: number;
   isOptimized?: boolean;
+  isMapLoaded?: boolean;
 }
 
 export default function useMarkers({
   mapRef,
   count,
   isOptimized = false,
+  isMapLoaded = false,
 }: UseMarkersProps) {
   const [coordinatesList, setCoordinatesList] = useState<[number, number][]>(
     []
   );
 
   useEffect(() => {
-    console.log('map rerender');
-    if (!mapRef.current || count === 0) return;
+    if (!mapRef.current || count === 0 || !isMapLoaded) return;
 
     const map = mapRef.current;
 
@@ -36,13 +37,8 @@ export default function useMarkers({
       );
       setCoordinatesList(newCoordinates);
     };
-
-    if (map.isStyleLoaded()) {
-      handleMapReady();
-    } else {
-      map.once('load', handleMapReady);
-    }
-  }, [mapRef, count]);
+    handleMapReady();
+  }, [mapRef, count, isMapLoaded]);
 
   useEffect(() => {
     if (!mapRef.current || coordinatesList.length === 0) return;
@@ -51,9 +47,10 @@ export default function useMarkers({
     const markers: mapboxgl.Marker[] = [];
 
     if (isOptimized) {
-      console.log('render renderOptimizedMarkers');
       renderOptimizedMarkers(map, coordinatesList);
-    } else {
+    }
+
+    if (!isOptimized) {
       renderSlowMarkers(map, coordinatesList, markers);
     }
 
