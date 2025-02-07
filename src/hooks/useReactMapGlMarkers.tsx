@@ -9,7 +9,7 @@ interface UseMarkersProps {
   mapIsLoaded: boolean;
 }
 
-export default function useReactMapGlMarkers({
+export default function ReactMapGlMarkers({
   mapRef,
   count,
   isOptimized,
@@ -34,9 +34,19 @@ export default function useReactMapGlMarkers({
     setCoordinatesList(newCoordinates);
   }, [mapRef, count, mapIsLoaded]);
 
+  console.log('coordinatesList', coordinatesList);
   if (coordinatesList.length === 0) return null;
 
   if (isOptimized) {
+    const makiIconUrl =
+      'https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png';
+    const map = mapRef.current;
+
+    map.loadImage(makiIconUrl, (error, image) => {
+      if (error) throw error;
+      map.addImage('custom-marker', image as ImageData);
+    });
+
     return (
       <Source
         id="points"

@@ -14,7 +14,7 @@ const KYIV_COORDS = {
 
 function App() {
   const [inputValue, setInputValue] = useState<string>('10');
-  const [tab, setTab] = useState<number>(2);
+  const [tab, setTab] = useState<number>(0);
 
   const handleTabClick = (index: number) => {
     setTab(index);
@@ -23,21 +23,21 @@ function App() {
   return (
     <div className="w-full h-screen">
       <HeaderTabs onTabClick={handleTabClick} />
-      {tab === 0 || tab === 1 ? (
+      {tab === 0 ? (
+        <ReactMapGlMap markerCount={Number(inputValue)} isOptimized={false} />
+      ) : null}
+
+      {tab === 1 ? (
+        <ReactMapGlMap markerCount={Number(inputValue)} isOptimized={true} />
+      ) : null}
+
+      {tab === 2 ? (
         <MapGlMap
           longitude={KYIV_COORDS.longitude}
           latitude={KYIV_COORDS.latitude}
           zoom={12}
           inputValue={inputValue}
         />
-      ) : null}
-
-      {tab === 2 ? (
-        <ReactMapGlMap markerCount={Number(inputValue)} isOptimized={false} />
-      ) : null}
-
-      {tab === 3 ? (
-        <ReactMapGlMap markerCount={Number(inputValue)} isOptimized={true} />
       ) : null}
 
       <div className="flex gap-5 flex-nowrap items-center">

@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import Map from 'react-map-gl';
-import useReactMapGlMarkers from '../../hooks/useReactMapGlMarkers';
+import ReactMapGlMarkers from '../../hooks/useReactMapGlMarkers';
 
 const KYIV_COORDS = { longitude: 30.5234, latitude: 50.4501 };
 
@@ -20,13 +20,6 @@ export const ReactMapGlMap = ({
     setMapIsLoaded(true);
   };
 
-  const MarkersComponent = useReactMapGlMarkers({
-    mapRef,
-    count: markerCount,
-    isOptimized,
-    mapIsLoaded,
-  });
-
   return (
     <Map
       ref={mapRef}
@@ -40,7 +33,12 @@ export const ReactMapGlMap = ({
       mapStyle="mapbox://styles/mapbox/streets-v12"
       mapboxAccessToken={import.meta.env.VITE_REACT_MAPBOX_TOKEN}
     >
-      {MarkersComponent}
+      <ReactMapGlMarkers
+        mapRef={mapRef}
+        count={markerCount}
+        isOptimized={isOptimized}
+        mapIsLoaded={mapIsLoaded}
+      />
     </Map>
   );
 };
