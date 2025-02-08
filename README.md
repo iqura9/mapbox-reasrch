@@ -1,50 +1,42 @@
-# React + TypeScript + Vite
+# React MapBox Comparison 🗺️
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project implements an interactive map using **React** and **Mapbox**, focusing on performance optimization and marker compression techniques.
 
-Currently, two official plugins are available:
+## Features ✨
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Mapbox Integration** – Seamlessly integrates Mapbox for rendering maps.
+- **Marker Compression** – Reduces marker length to optimize performance.
+- **Performance Comparison** – Includes different implementations to benchmark rendering efficiency.
+- **UI Tabs** – Switch between different optimized map versions for direct comparison.
 
-## Expanding the ESLint configuration
+## Technologies Used 🛠️
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **React** (with functional components)
+- **Mapbox GL JS**
+- **React-Map-GL**
+- **Optimization Strategies**
 
-- Configure the top-level `parserOptions` property like this:
+## Demo 📸
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+![Project Screenshot](./image.png)
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## Setup 🚀
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+1. Clone the repo:
+2. Add .env file
+3. Set VITE_REACT_MAPBOX_TOKEN that belongs to Mapbox Account:
+   ```sh
+   VITE_REACT_MAPBOX_TOKEN="pk.*"
+   ```
+4. Install dependencies:
+   ```sh
+   npm install
+   ```
+5. Start the development server:
+   ```sh
+   npm start
+   ```
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## Contributions 🤝
+
+Feel free to fork, submit issues, or create pull requests!
