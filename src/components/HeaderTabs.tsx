@@ -8,8 +8,8 @@ const HeaderTabs = ({ onTabClick }: HeaderTabsProps) => {
   const [activeTab, setActiveTab] = useState(0);
 
   const tabs = [
-    'Reac-Map-Gl Map',
-    'Reac-Map-Gl Map(optimized)',
+    'React-Map-Gl Map',
+    'React-Map-Gl Map(optimized)',
     'MapBox-GL Map(optimized)',
   ];
 
