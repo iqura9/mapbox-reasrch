@@ -1,9 +1,11 @@
 import { MutableRefObject, useEffect, useState } from 'react';
-import { Layer, Marker, Source } from 'react-map-gl';
+import { Layer, Marker, Source, MapRef } from 'react-map-gl';
 import { generateRandomCoordinates } from '../utils/generateRandomCoords';
+import { loadCustomMarker } from '../utils/loadCustomMarker';
 
+type CoordinateType = [number, number];
 interface UseMarkersProps {
-  mapRef: MutableRefObject<Map | null>;
+  mapRef: MutableRefObject<MapRef | null>;
   count: number;
   isOptimized: boolean;
   mapIsLoaded: boolean;
@@ -15,15 +17,13 @@ export default function ReactMapGlMarkers({
   isOptimized,
   mapIsLoaded,
 }: UseMarkersProps) {
-  const [coordinatesList, setCoordinatesList] = useState<[number, number][]>(
-    []
-  );
+  const [coordinatesList, setCoordinatesList] = useState<CoordinateType[]>([]);
 
   useEffect(() => {
     if (!mapIsLoaded || !mapRef.current || count === 0) return;
 
     const map = mapRef.current;
-    const centerCoordinates: [number, number] = [
+    const centerCoordinates: CoordinateType = [
       map.getCenter().lng,
       map.getCenter().lat,
     ];
@@ -34,32 +34,22 @@ export default function ReactMapGlMarkers({
     setCoordinatesList(newCoordinates);
   }, [mapRef, count, mapIsLoaded]);
 
-  console.log('coordinatesList', coordinatesList);
   if (coordinatesList.length === 0) return null;
 
   if (isOptimized) {
-    const makiIconUrl =
-      'https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png';
-    const map = mapRef.current;
+    const geojsonData = {
+      type: 'FeatureCollection',
+      features: coordinatesList.map((coords) => ({
+        type: 'Feature',
+        geometry: { type: 'Point', coordinates: coords },
+        properties: { title: 'Mapbox Marker' },
+      })),
+    };
 
-    map.loadImage(makiIconUrl, (error, image) => {
-      if (error) throw error;
-      map.addImage('custom-marker', image as ImageData);
-    });
+    loadCustomMarker(mapRef.current);
 
     return (
-      <Source
-        id="points"
-        type="geojson"
-        data={{
-          type: 'FeatureCollection',
-          features: coordinatesList.map((coords) => ({
-            type: 'Feature',
-            geometry: { type: 'Point', coordinates: coords },
-            properties: { title: 'Mapbox Marker' },
-          })),
-        }}
-      >
+      <Source id="points" type="geojson" data={geojsonData}>
         <Layer
           id="points-layer"
           type="symbol"
@@ -71,27 +61,27 @@ export default function ReactMapGlMarkers({
         />
       </Source>
     );
-  } else {
-    return (
-      <>
-        {coordinatesList.map((coords, index) => (
-          <Marker
-            key={index}
-            longitude={coords[0]}
-            latitude={coords[1]}
-            anchor="bottom"
-          >
-            <div
-              style={{
-                backgroundImage: `url(https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png)`,
-                width: '32px',
-                height: '40px',
-                backgroundSize: '100%',
-              }}
-            />
-          </Marker>
-        ))}
-      </>
-    );
   }
+
+  return (
+    <>
+      {coordinatesList.map((coords, index) => (
+        <Marker
+          key={index}
+          longitude={coords[0]}
+          latitude={coords[1]}
+          anchor="bottom"
+        >
+          <div
+            style={{
+              backgroundImage: `url(https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png)`,
+              width: '32px',
+              height: '40px',
+              backgroundSize: '100%',
+            }}
+          />
+        </Marker>
+      ))}
+    </>
+  );
 }

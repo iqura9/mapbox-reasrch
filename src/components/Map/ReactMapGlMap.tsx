@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import Map from 'react-map-gl';
+import Map, { MapRef } from 'react-map-gl';
 import ReactMapGlMarkers from '../../hooks/useReactMapGlMarkers';
 
 const KYIV_COORDS = { longitude: 30.5234, latitude: 50.4501 };
@@ -13,7 +13,7 @@ export const ReactMapGlMap = ({
   markerCount,
   isOptimized,
 }: ReactMapGlMapProps) => {
-  const mapRef = useRef<Map | null>(null);
+  const mapRef = useRef<MapRef | null>(null);
   const [mapIsLoaded, setMapIsLoaded] = useState(false);
 
   const handleMapLoad = () => {
